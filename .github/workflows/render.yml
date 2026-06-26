@@ -1,0 +1,54 @@
+name: Render LaTeX
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.tex'
+      - '**.bib'
+      - '.github/workflows/render.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-fonts-recommended \
+            texlive-latex-extra texlive-science latexmk
+
+      - name: Compile every .tex in place
+        run: |
+          shopt -s globstar nullglob
+          for f in **/*.tex; do
+            echo "Compiling $f"
+            d=$(dirname "$f"); b=$(basename "$f")
+            if ! ( cd "$d" && latexmk -pdf -interaction=nonstopmode -file-line-error "$b" ); then
+              echo "::warning::$f failed to compile"
+            fi
+          done
+          echo "Compiled PDFs:"; ls -la **/*.pdf 2>/dev/null || true
+
+      - name: Commit and push PDFs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          shopt -s globstar nullglob
+          for p in **/*.pdf; do
+            [ "$p" = "source.pdf" ] && continue
+            git add -f "$p" 2>/dev/null || true
+          done
+          if git diff --cached --quiet; then
+            echo "No PDF changes to commit"
+          else
+            git commit -m "render: compiled PDFs [skip ci]"
+            git push
+          fi

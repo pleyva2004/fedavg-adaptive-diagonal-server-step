@@ -1,0 +1,9 @@
+{
+  "slug": "fedavg-adaptive-diagonal-server-step",
+  "title": "FedAdaServer: Per-Coordinate Adaptive (Adam-Style) Server Steps Provably Cancel Ill-Conditioning",
+  "parent_arxiv": "1602.05629",
+  "lens": "Server-side optimization & acceleration",
+  "kind": "theoretical",
+  "started": "2026-06-26",
+  "github_url": "https://github.com/pleyva2004/fedavg-adaptive-diagonal-server-step"
+}

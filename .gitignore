@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.cache/
+*.pt
+*.bin
+
+# OS
+.DS_Store
+
+# LaTeX intermediates (the compiled *.pdf are committed by the render workflow,
+# so they are deliberately NOT ignored here).
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
